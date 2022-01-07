@@ -1,10 +1,10 @@
 import logo from './logo.svg';
 import './App.css';
-import Main from './Components/Main/Main';
+import Sub from './Components/Main/SubMain';
 function App() {
   return (
     <div className="App">
-      <Main />
+      <Sub />
     </div>
   );
 }

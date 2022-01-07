@@ -168,37 +168,7 @@ const Main = () => {
         web3.eth.sendSignedTransaction(rawData);
       }
 
-      const connected = () => {
-          return (
-              <>
-              <div className="btnCont">
-              <Disconnect />
-              <Delegate />
-              </div>
-              
-              <p>Connected as : {currentAccount}</p>
-              </>
-          )
-      }
       
-      const Disconnect = () => {
-          return (
-          <button onClick={() => {
-              setCurrentAccount(null);
-          }} className="btn">Disconnect</button>
-          )
-      }
-
-      const Delegate = () => {
-          return (
-           
-                <button onClick={
-                    interactMain
-                } className="btn">Approve your weth</button>
-                )
-          
-      }
-
 
       useEffect(() => {
         checkWalletConnected();
@@ -206,8 +176,13 @@ const Main = () => {
 
     return (
         <>
-            <h1>Delegate your WETH</h1>
-            {currentAccount !== null ? connected() : connectWalletButton() }
+            <div className="navbar">
+              <div className="container">
+                <a class="logo" href="https://4chan.org/biz/">Tendies<span>HQ</span></a>
+                <img id="mobile-cta" class="mobile-menu" src="assets/menu.svg" alt="Open Navigation" />
+
+              </div>
+            </div>
             {error === "" ? null: <p style={{color: "red"}}>{error}</p>}
             
         </>
